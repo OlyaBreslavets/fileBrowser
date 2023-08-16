@@ -1,14 +1,7 @@
-import { mockRequests } from "./mock"
-
 context('AuthorizationTests', function () {
 
     beforeEach(function () {
-        mockRequests()
-
         cy.intercept('POST', '**/login').as('login')
-
-        cy.visit('/')
-
     })
 
     it("PositiveAuthorizationTest", () => {
@@ -73,12 +66,26 @@ context('AuthorizationTests', function () {
         cy.get('.wrong').should('include.text', 'Неверные данные')
     })
 
-    it.only("AuthorizationTest (statuscode 500)", () => {
+    it("AuthorizationTest (statuscode 500)", () => {
+        cy.intercept('POST', '**/login', { statusCode: 500 }).as('serverError')
+
         cy.login('admin','admin')
 
         cy.wait('@serverError').its('response.statusCode').should('eq', 500)
 
         cy.get('.wrong').should('include.text', 'Неверные данные')
+    })
+
+    it.only("LogoutTest", () => {
+        cy.login('admin','admin')
+
+        cy.wait('@login').its('response.statusCode').should('eq', 200)
+
+        cy.url().should('include', 'http://51.250.1.158:49153/files/')
+
+        cy.get('#logout').click()
+
+        cy.url().should('include', 'http://51.250.1.158:49153/login')
     })
 }
 )

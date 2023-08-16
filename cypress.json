@@ -3,7 +3,7 @@
   "ignoreTestFiles": ["*snapshots.js", "*mock.js"],
   "chromeWebSecurity": false,
   "watchForFileChanges": false,
-  "retries": 1,
+  "retries": 0,
   "viewportWidth": 1280,
   "viewportHeight": 720
 }
